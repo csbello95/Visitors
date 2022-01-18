@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
       : req.query.name;
   const date = Date.now();
   const newVisitor = {};
-  newVisitor.name = name || "Anónimo";
+  newVisitor.name = name;
   newVisitor.date = date;
   const visitor = new Visitor(newVisitor);
   visitor.save(newVisitor, (err, visitor) => {
