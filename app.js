@@ -1,6 +1,9 @@
 import express from "express";
-import router from "./routes/visitor.route.js";
 import mongoose from "mongoose";
+
+const app = express();
+
+app.use(express.json());
 
 //DB
 mongoose.connect(
@@ -20,26 +23,20 @@ const schema = {
 const Visitor = mongoose.model("Visitor", schema, "Visitor");
 
 //Controller
-app.get('/',(req, res) => {
-    db.connect();
-    const { name } = req.query;
-    const date = Date.now();
-    const newVisitor = {};
-    newVisitor.name = name || "Anónimo";
-    newVisitor.date = date;
-  
-    Visitor.create(newVisitor, (err, visitor) => {
-      if (err) res.sendStatus(500);
-      res.send(`<h1>El visitante fue almacenado con éxito</h1>`);
-    });
+app.get("/", (req, res) => {
+  const name =
+    req.query.name == undefined || req.query.name == ""
+      ? "Anónimo"
+      : req.query.name;
+  const date = Date.now();
+  const newVisitor = {};
+  newVisitor.name = name || "Anónimo";
+  newVisitor.date = date;
+  const visitor = new Visitor(newVisitor);
+  visitor.save(newVisitor, (err, visitor) => {
+    if (err) res.sendStatus(500);
+    res.send(`<h1>El visitante fue almacenado con éxito</h1>`);
   });
-  
-
-
-const app = express();
-
-app.use(express.json());
-
-app.use("/", router);
+});
 
 app.listen(3000, () => console.log("Listening on port 3000!"));
