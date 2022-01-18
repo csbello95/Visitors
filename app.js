@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 
 const app = express();
 
-app.use(express.json());
 
 //DB
 mongoose.connect(
@@ -20,7 +19,7 @@ const schema = {
   name: String,
 };
 //Model
-const Visitor = mongoose.model("Visitor", schema, "Visitor");
+const Visitor = mongoose.model("Visitor", schema);
 
 //Controller
 app.get("/", (req, res) => {
@@ -29,9 +28,7 @@ app.get("/", (req, res) => {
       ? "Anónimo"
       : req.query.name;
   const date = Date.now();
-  const newVisitor = {};
-  newVisitor.name = name;
-  newVisitor.date = date;
+  const newVisitor = {name,date};
   const visitor = new Visitor(newVisitor);
   visitor.save(newVisitor, (err, visitor) => {
     if (err) res.sendStatus(500);
